@@ -64,32 +64,19 @@ def windson(M):
     return total
 
 def ponderada(M):
-    totalpesos=[]    
-    somadivisor= somatorio(8)
+    ponderada=[]
+    pesos=[1,1,1,1,1,1,1,1,1]
+    somadivisor=0
+    for p in range(len(pesos)):
+       somadivisor+=pesos[p]
+   
     for linha in range(len(M)):
-        pesos=[0,0,0,0,0,0,0,0]
-        for col in range(len(M[linha])):
-            if M[linha][col]==1:
-               pesos[0]+=1
-            elif M[linha][col]==2:
-               pesos[1]+=1
-            elif M[linha][col]==3:
-               pesos[2]+=1
-            elif M[linha][col]==4:
-               pesos[3]+=1
-            elif M[linha][col]==5:
-               pesos[4]+=1
-            elif M[linha][col]==6:
-               pesos[5]+=1
-            elif M[linha][col]==7:
-               pesos[6]+=1
-            else:
-               pesos[7]+=1
-        somadividendo=0
-        for col in range(len(pesos)):
-            somadividendo+=(col+1)*pesos[col]
-        totalpesos.append(somadividendo/somadivisor)
-    return totalpesos
+       somadividendo=0       
+       for col in range(len(pesos)):
+          somadividendo+=M[linha][col]*pesos[col]
+       ponderada.append(somadividendo/somadivisor)
+       
+    return ponderada
             
 def tng(M):
     total=[]
