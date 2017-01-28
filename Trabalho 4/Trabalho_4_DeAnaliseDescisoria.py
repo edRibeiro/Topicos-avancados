@@ -98,7 +98,26 @@ def main():
     for i in range(len(norm)):
         pml.append(calcularPML(norm[i]))
         print("\n",crt[i],"=",pml[i])
+    print("\nPML's à luz do Foco Principal.\n")
+    pmlfp=calcularPMLFP(fp)
+    for i in range(len(pmlfp)):
+        print("\n",crt[i],"=",pmlfp[i])
+    ##PRIORIDADES MÉDIAS GLOBAIS
+
+    pg=[]
+    
 ####################################################################
+##def calcularPG(
+def calcularPMLFP(dp):
+    pml=[]
+    for i in range(len(dp)):
+        somalinha=0
+        for j in range(len(dp[i])):
+            somalinha+=dp[i][j]
+        somalinha/=len(dp[i])
+        pml.append(somalinha)
+    return pml
+        
 def calcularPML(dp):
     pml=[]
     for i in range(len(dp[0])):
