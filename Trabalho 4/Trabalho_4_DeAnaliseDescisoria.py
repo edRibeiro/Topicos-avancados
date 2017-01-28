@@ -92,10 +92,23 @@ def main():
             for k in range(len(norm[i][j])):
                 print (alt[k]," ",norm[i][j][k])
 
-    ##Iniciar PRIORIDADES MÉDIAS LOCAIS
-
+    ##PRIORIDADES MÉDIAS LOCAIS
+    print("\nPML's à luz dos criterios.\n")
+    pml=[]
+    for i in range(len(norm)):
+        pml.append(calcularPML(norm[i]))
+        print("\n",crt[i],"=",pml[i])
 ####################################################################
-
+def calcularPML(dp):
+    pml=[]
+    for i in range(len(dp[0])):
+        somalinha=0
+        for j in range(len(dp[0][i])):
+            somalinha+=dp[0][i][j]
+        somalinha/=len(dp[0][i])
+        pml.append(somalinha)
+    return pml
+        
 def normalizar(alt, crt, dp):
     scrt=[]
     norm=[]
@@ -129,8 +142,7 @@ def listZero(size):
         lista.append(0)
     return lista
 
-def somacoluna(dp):
-    
+def somacoluna(dp):    
     tmp=dp[:]
     soma=listZero(len(tmp[0]))
     ##print(soma)
@@ -138,4 +150,7 @@ def somacoluna(dp):
         for j in range(len(tmp[i])):
             soma[j]+=tmp[i][j]
     return (soma)
+
+def somaLinha():
+    return
 main()
