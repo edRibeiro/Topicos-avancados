@@ -27,8 +27,8 @@ def main():
     dp=[
         [##1 - preço
             [1,4,9],
-            [1/4,1,4],
-            [1/9,1/4,1]
+            [(1/4),1,4],
+            [(1/9),(1/4),1]
         
         ],
         [##2 - segurança
@@ -63,53 +63,79 @@ def main():
         ]
     ]
 
+
+    fp=[
+        [1.0, 8.0, 2.0, 3.0, 1.0, 4.0, 9.0],
+        [1/8, 1.0, 7.0, 7.0, 1/9, 3.0, 4.0],
+        [1/2, 1/7, 1.0, 2.0, 1.0, 6.0, 8.0],
+        [1/3, 1/7, 1/2, 1.0, 1/2, 6.0, 7.0],
+        [1.0, 9.0, 1.0, 2.0, 1.0, 9.0, 9.0],
+        [1/4, 1/3, 1/6, 1/6, 1/9, 1.0, 1.0],
+        [1/9, 1/4, 1/8, 1/7, 1/9, 1.0, 1.0]
+    ]
+    print ("\nDesempenho dos criterios à luz do Foco Principal")
+    print("Foco Peincipal ",crt)
+    for i in range(len(fp)):
+        print(crt[i]," ",fp[i])
+    
     print ("\nDesempenho das alternativas à luz dos critérios")
     for i in range(len(dp)):
         print("\n",crt[i]," ",alt)
         for j in range(len(dp[i])):
-            print (alt[j]," ",dp[j][j])
-    normal=normalizarquadros(dp)
-    print ("\nDesempenho das alternativas à luz dos critérios Nomormalizados")
-    for i in range(len(normal)):
-        print("\n",crt[i]," ",alt)
-        for j in range(len(normal[i])):
-            print (alt[j]," ",normal[j][j])
+            print (alt[j]," ",dp[i][j])
+            
+    norm = normalizar(alt, crt, dp)
+    print ("\nDesempenho das alternativas à luz dos critérios normalizados")
+    for i in range(len(norm)):
+        for j in range(len(norm[i])):
+            print("\n",crt[i]," ",alt)
+            for k in range(len(norm[i][j])):
+                print (alt[k]," ",norm[i][j][k])
 
-    calcularPML(dp)
-## prioridades médias locais (PML)    
-def calcularPML(desp):
-    pml=[]
-    for i in range(len(desp)):
-        tpml=desp[i]
+    ##Iniciar PRIORIDADES MÉDIAS LOCAIS
 
-        
-def normalizarquadros(df):
-    soma_cri=[]
-    qn=[]
-    for i in range(len(df)):
-        soma_cri.append(somaColuna(df[i]))
-    for i in range(len(df)):
-        tmp=df[i][:]
-        for j in range(len(tmp)):
-            for l in range(len(tmp[j])):
-                tmp[j][l]=tmp[j][l]/soma_cri[i][l]
-        qn.append(tmp)
-    return qn
+####################################################################
+
+def normalizar(alt, crt, dp):
+    scrt=[]
+    norm=[]
+    for i in range(len(dp)):
+        scrt.append(somacoluna(dp[i]))
+    for i in range(len(dp)):
+        norm.append(divCelulas(dp[i], scrt[i]))
+    return norm
+##    print ("\nDesempenho das alternativas à luz dos critérios normalizados")
+##    for i in range(len(norm)):
+##        for j in range(len(norm[i])):
+##            print("\n",crt[i]," ",alt)
+##            for k in range(len(norm[i][j])):
+##                print (alt[k]," ",norm[i][j][k])
+                
+def divCelulas(dp, src):
+    norm=[]
+    linha=[]
+    for i in range(len(dp)):
+        col=[]
+        for j in range(len(dp[i])):
+            col.append(dp[i][j]/src[j])
+        linha.append(col)
+    norm.append(linha)
+    return (norm)
 
     
-def somaColuna(tb):
-    soma=[]
+def listZero(size):
+    lista=[]
+    for i in range(size):
+        lista.append(0)
+    return lista
+
+def somacoluna(dp):
     
-    for i in range(len(tb[0])):
-        soma.append(0)
-    for i in range(len(tb)):
-        for j in range(len(tb[i])):
-            soma[j]+=tb[i][j]
-    return soma
-    
-def somalinha(linha):
-    soma=0.0
-    for i in range(len(linha)):
-        soma+=linha[i]
-    return soma
+    tmp=dp[:]
+    soma=listZero(len(tmp[0]))
+    ##print(soma)
+    for i in range(len(tmp)):
+        for j in range(len(tmp[i])):
+            soma[j]+=tmp[i][j]
+    return (soma)
 main()
