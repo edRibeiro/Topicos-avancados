@@ -65,13 +65,13 @@ def main():
 
 
     fp=[
-        [1.0, 8.0, 2.0, 3.0, 1.0, 4.0, 9.0],
+        [1.0, 8.0, 1.0, 3.0, 1.0, 4.0, 9.0],
         [1/8, 1.0, 7.0, 7.0, 1/9, 3.0, 4.0],
-        [1/2, 1/7, 1.0, 2.0, 1.0, 6.0, 8.0],
+        [1.0, 1/7, 1.0, 2.0, 1.0, 6.0, 8.0],
         [1/3, 1/7, 1/2, 1.0, 1/2, 6.0, 7.0],
         [1.0, 9.0, 1.0, 2.0, 1.0, 9.0, 9.0],
-        [1/4, 1/3, 1/6, 1/6, 1/9, 1.0, 1.0],
-        [1/9, 1/4, 1/8, 1/7, 1/9, 1.0, 1.0]
+        [1/4, 1/3, 1/6, 1/6, 1/9, 1.0, 1/2],
+        [1/9, 1/4, 1/8, 1/7, 1/9, 2.0, 1.0]
     ]
     print ("\nDesempenho dos criterios à luz do Foco Principal")
     print("Foco Peincipal ",crt)
@@ -104,18 +104,35 @@ def main():
         print("\n",crt[i],"=",pmlfp[i])
     ##PRIORIDADES MÉDIAS GLOBAIS
 
-    pg=[]
-    
+    pg=calcularPG(pml,pmlfp)
+
+    ##Iniciar analise de inconsistencia
 ####################################################################
-##def calcularPG(
+def calcularPG(pml,pmlfp):
+    pg=[]
+    soma=0
+    linha=len(pml)
+    col=len(pml[0])
+    for i in range(col):
+        soma=0
+##        print("\nA",(i+1))
+        for j in range(linha):
+            ##print(pmlfp[j]," x ",pml[j][i],"=",round((pmlfp[j]*pml[j][i]),2))
+            soma+=round(pmlfp[j]*pml[j][i],2)
+            ##print("Soma = ",soma)
+        pg.append(round(soma,2))
+        print("A",(i+1),":",pg[i])
+    return pg
+            
+    
 def calcularPMLFP(dp):
     pml=[]
     for i in range(len(dp)):
         somalinha=0
         for j in range(len(dp[i])):
-            somalinha+=dp[i][j]
-        somalinha/=len(dp[i])
-        pml.append(somalinha)
+            somalinha+=round(dp[i][j],2)
+        somalinha/=len(dp)
+        pml.append(round(somalinha,2))
     return pml
         
 def calcularPML(dp):
