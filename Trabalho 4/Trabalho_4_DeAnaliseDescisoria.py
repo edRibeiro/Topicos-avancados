@@ -1,3 +1,4 @@
+import math 
 def main():
     print ("    Topicos Avançados")
     print ("    Analise Descisoria\n")
@@ -26,9 +27,9 @@ def main():
 
     dp=[
         [##1 - preço
-            [1,4,9],
+            [1,4,7],
             [(1/4),1,4],
-            [(1/9),(1/4),1]
+            [(1/7),(1/4),1]
         
         ],
         [##2 - segurança
@@ -84,13 +85,21 @@ def main():
         for j in range(len(dp[i])):
             print (alt[j]," ",dp[i][j])
             
-    norm = normalizar(alt, crt, dp)
+    norm = normalizar(dp)
     print ("\nDesempenho das alternativas à luz dos critérios normalizados")
     for i in range(len(norm)):
         for j in range(len(norm[i])):
             print("\n",crt[i]," ",alt)
             for k in range(len(norm[i][j])):
                 print (alt[k]," ",norm[i][j][k])
+                
+    normFP = normalizarFP(fp)
+    print(normFP)
+    print ("\nDesempenho dos criterios à luz do Foco peincipal normalizado")
+    print("\nFoco Principal ",crt)
+    for k in range(len(normFP)):
+        print (crt[k]," ",normFP[k])
+    
 
     ##PRIORIDADES MÉDIAS LOCAIS
     print("\nPML's à luz dos criterios.\n")
@@ -99,7 +108,7 @@ def main():
         pml.append(calcularPML(norm[i]))
         print("\n",crt[i],"=",pml[i])
     print("\nPML's à luz do Foco Principal.\n")
-    pmlfp=calcularPMLFP(fp)
+    pmlfp=calcularPMLFP(normFP)
     for i in range(len(pmlfp)):
         print("\n",crt[i],"=",pmlfp[i])
     ##PRIORIDADES MÉDIAS GLOBAIS
@@ -107,7 +116,35 @@ def main():
     pg=calcularPG(pml,pmlfp)
 
     ##Iniciar analise de inconsistencia
+    
 ####################################################################
+
+def inconsistencia(dp, pml):
+    n=len(dp)
+    ic=(autovalores(dp, pml)-n)/(n-1)##autovalores deve ser uma matriz
+    
+def autovalores(dp, pml):
+    dp2=[]
+    for h in range(len(dp)):
+        linha=[]
+        for i in range(len(dp[h])):
+            col=[]
+            for j in range(len(dp[h][i])):
+                col.append(dp[h][i][j]*pml[h][j])
+            linha.append()
+        dp2.append(linha)
+    pri=[]
+    for i in range(len(dp)):
+        pri.append(somacoluna(dp2[i]))
+    pml2=[]
+    for i in range(len(pri)):
+        col=[]
+        for j in range(len(pri[i])):
+            col.append(pri[i][j]/dp2[i][j][j])
+        pml2.append(col)
+    ##criar somalinha para somar as linhas de pml2 e dividir pela ordem da matriz e armasenar o resultado de cada linha em um vetor
+    
+    
 def calcularPG(pml,pmlfp):
     pg=[]
     soma=0
@@ -115,13 +152,10 @@ def calcularPG(pml,pmlfp):
     col=len(pml[0])
     for i in range(col):
         soma=0
-##        print("\nA",(i+1))
         for j in range(linha):
-            ##print(pmlfp[j]," x ",pml[j][i],"=",round((pmlfp[j]*pml[j][i]),2))
-            soma+=round(pmlfp[j]*pml[j][i],2)
-            ##print("Soma = ",soma)
-        pg.append(round(soma,2))
-        print("A",(i+1),":",pg[i])
+            soma+=pmlfp[j]*pml[j][i]
+        pg.append(soma)
+        print("A",(i+1),":",round(pg[i],2))
     return pg
             
     
@@ -144,8 +178,22 @@ def calcularPML(dp):
         somalinha/=len(dp[0][i])
         pml.append(somalinha)
     return pml
-        
-def normalizar(alt, crt, dp):
+def normalizarFP(dp):
+    scrt=[]
+    norm=[]    
+    for i in range(len(dp)):
+        soma=0
+        for j in range(len(dp[i])):
+            soma+=dp[j][i]
+        scrt.append(soma)
+    for i in range(len(dp)):
+        linha=[]
+        for j in range(len(dp[i])):
+            linha.append(round(dp[i][j]/scrt[j],2))
+        norm.append(linha)
+    return norm
+
+def normalizar(dp):
     scrt=[]
     norm=[]
     for i in range(len(dp)):
@@ -186,7 +234,10 @@ def somacoluna(dp):
         for j in range(len(tmp[i])):
             soma[j]+=tmp[i][j]
     return (soma)
-
-def somaLinha():
-    return
+def somalinha():##criar implementaçoã
+def modulo(x):
+    if(x<0):
+        return x*-1
+    else:
+        return x
 main()
