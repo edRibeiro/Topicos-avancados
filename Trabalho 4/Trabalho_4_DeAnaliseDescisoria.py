@@ -1,4 +1,5 @@
-import math 
+import math
+from operator import itemgetter
 def main():
     print ("    Topicos Avançados")
     print ("    Analise Descisoria\n")
@@ -86,7 +87,7 @@ def main():
             print (alt[j]," ",dp[i][j])
             
     norm = normalizar(dp)
-    print ("\nDesempenho das alternativas à luz dos critérios normalizados")
+    print ("\nDesempenho das alternativas à luz dos critérios após serem normalizados")
     for i in range(len(norm)):
         for j in range(len(norm[i])):
             print("\n",crt[i]," ",alt)
@@ -95,7 +96,7 @@ def main():
                 
     normFP = normalizarFP(fp)
     print(normFP)
-    print ("\nDesempenho dos criterios à luz do Foco peincipal normalizado")
+    print ("\nDesempenho dos criterios à luz do Foco peincipal após ser normalizado")
     print("\nFoco Principal ",crt)
     for k in range(len(normFP)):
         print (crt[k]," ",normFP[k])
@@ -114,37 +115,79 @@ def main():
     ##PRIORIDADES MÉDIAS GLOBAIS
 
     pg=calcularPG(pml,pmlfp)
-
+    print("\n Desempenhos das alternativas à luz do Foco Principal")
+    for i in range(len(pg)):
+        print(alt[i],": ",round(pg[i],2))
+    mostrarResultado(pg, alt)
+    
     ##Iniciar analise de inconsistencia
+    ic=inconsistencia(dp, pml)
+    print("\nÍndice da Consistência")
+    for i in range(len(ic)):
+        print(crt[i],"= ",ic[i])
+    print("\nRazão de Consistência")
+    rc=razaoConsistencia(ic, len(alt))
+    for i in range(len(ic)):
+        print(crt[i],"= ",rc[i])
+
+    analise(rc, crt)
     
 ####################################################################
+def analise(rc, crt):
+    fora=[]
+    for i in range(len(rc)):
+        if rc[i]>=0.1:
+            fora.append(crt[rc.index(max(rc))])
+    if len(fora)>0:
+        print("\nTolerancia da Razão de Consistencia quebrada! Revisar modelo ou julgamentos.")
+        print("Itens com inconsistencia ")
+        for i in fora:
+            print(" ",i)
+    else:
+        print("Nenhuma Razão de Consistencia fora do padrão.")
 
+def mostrarResultado(pg, alt):
+    print("\nO automovel que melhor atende ao as necessidades do decisor é o ", alt[pg.index(max(pg))],".")
+    
+def razaoConsistencia(ic, ordemDaMatriz):
+    icr=[## ÍNDICES DE CONSISTÊNCIA RANDÔMICOS
+        0.00,##0
+        0.00,##1
+        0.00,##2
+        0.58,##3
+        0.90,
+        1.12,
+        1.24,
+        1.32,
+        1.41,
+        1.45
+        ]
+    print("ICR=,", icr[ordemDaMatriz])
+    rc=[]
+    for i in range(len(ic)):
+        rc.append(ic[i]/icr[ordemDaMatriz])
+    return rc
+    
 def inconsistencia(dp, pml):
-    n=len(dp)
-    ic=(autovalores(dp, pml)-n)/(n-1)##autovalores deve ser uma matriz
-    
-def autovalores(dp, pml):
-    dp2=[]
-    for h in range(len(dp)):
-        linha=[]
-        for i in range(len(dp[h])):
-            col=[]
-            for j in range(len(dp[h][i])):
-                col.append(dp[h][i][j]*pml[h][j])
-            linha.append()
-        dp2.append(linha)
-    pri=[]
+    n=len(dp[0])
+    ic=[]
     for i in range(len(dp)):
-        pri.append(somacoluna(dp2[i]))
-    pml2=[]
-    for i in range(len(pri)):
+        ic.append(modulo(autovalores(dp[i][:], pml[i])-n)/(n-1))
+    return ic
+
+def autovalores(dp, pml):
+    dpaux=[]
+    for i in range(len(dp)):
         col=[]
-        for j in range(len(pri[i])):
-            col.append(pri[i][j]/dp2[i][j][j])
-        pml2.append(col)
-    ##criar somalinha para somar as linhas de pml2 e dividir pela ordem da matriz e armasenar o resultado de cada linha em um vetor
-    
-    
+        for j in range(len(dp[i])):
+            col.append(dp[i][j]*pml[j])
+        dpaux.append(col)
+    priaux=[]
+    for i in range(len(dpaux)):
+        priaux.append(somalinha(dpaux[i])/pml[i])
+    lmax=somalinha(priaux)/len(priaux)
+    return lmax
+
 def calcularPG(pml,pmlfp):
     pg=[]
     soma=0
@@ -155,7 +198,6 @@ def calcularPG(pml,pmlfp):
         for j in range(linha):
             soma+=pmlfp[j]*pml[j][i]
         pg.append(soma)
-        print("A",(i+1),":",round(pg[i],2))
     return pg
             
     
@@ -234,7 +276,13 @@ def somacoluna(dp):
         for j in range(len(tmp[i])):
             soma[j]+=tmp[i][j]
     return (soma)
-def somalinha():##criar implementaçoã
+
+def somalinha(pmlaux):
+    soma=0
+    for i in range(len(pmlaux)):
+        soma+=pmlaux[i]
+    return soma
+    
 def modulo(x):
     if(x<0):
         return x*-1
