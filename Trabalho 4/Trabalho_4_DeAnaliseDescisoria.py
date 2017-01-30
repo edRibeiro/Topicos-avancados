@@ -26,7 +26,7 @@ def main():
     for i in range(len(tbl_pagamentos)):
         print(crt[i],": ",tbl_pagamentos[i])
 
-    dp=[
+    dp=[##Desenpenho das alternativas à luz de cada critério.
         [##1 - preço
             [1,4,7],
             [(1/4),1,4],
@@ -66,7 +66,7 @@ def main():
     ]
 
 
-    fp=[
+    fp=[## Desempenho dos critérios à luz do foco principal.
         [1.0, 8.0, 1.0, 3.0, 1.0, 4.0, 9.0],
         [1/8, 1.0, 7.0, 7.0, 1/9, 3.0, 4.0],
         [1.0, 1/7, 1.0, 2.0, 1.0, 6.0, 8.0],
@@ -86,7 +86,7 @@ def main():
         for j in range(len(dp[i])):
             print (alt[j]," ",dp[i][j])
             
-    norm = normalizar(dp)
+    norm = normalizar(dp)##Desempenho das alternativas, à luz critérios, normalizados
     print ("\nDesempenho das alternativas à luz dos critérios após serem normalizados")
     for i in range(len(norm)):
         for j in range(len(norm[i])):
@@ -94,7 +94,7 @@ def main():
             for k in range(len(norm[i][j])):
                 print (alt[k]," ",norm[i][j][k])
                 
-    normFP = normalizarFP(fp)
+    normFP = normalizarFP(fp)##Desempenho dos criterios à luz do foco principal normalizado.
     print(normFP)
     print ("\nDesempenho dos criterios à luz do Foco peincipal após ser normalizado")
     print("\nFoco Principal ",crt)
@@ -104,36 +104,37 @@ def main():
 
     ##PRIORIDADES MÉDIAS LOCAIS
     print("\nPML's à luz dos criterios.\n")
-    pml=[]
+    pml=[]##Vetor de prioridades médias locais
     for i in range(len(norm)):
         pml.append(calcularPML(norm[i]))
         print("\n",crt[i],"=",pml[i])
     print("\nPML's à luz do Foco Principal.\n")
-    pmlfp=calcularPMLFP(normFP)
+    pmlfp=calcularPMLFP(normFP)##Vetor de prioridades dos critérios à luz do Foco principal.
     for i in range(len(pmlfp)):
         print("\n",crt[i],"=",pmlfp[i])
     ##PRIORIDADES MÉDIAS GLOBAIS
 
-    pg=calcularPG(pml,pmlfp)
+    pg=calcularPG(pml,pmlfp)##Vetor de prioridades médias globais
     print("\n Desempenhos das alternativas à luz do Foco Principal")
     for i in range(len(pg)):
         print(alt[i],": ",round(pg[i],2))
     mostrarResultado(pg, alt)
     
-    ##Iniciar analise de inconsistencia
-    ic=inconsistencia(dp, pml)
+    ##Análise de Consistência
+    
+    ic=inconsistencia(dp, pml)##Vetor dos Índices de Consistência
     print("\nÍndice da Consistência")
     for i in range(len(ic)):
         print(crt[i],"= ",ic[i])
     print("\nRazão de Consistência")
-    rc=razaoConsistencia(ic, len(alt))
+    rc=razaoConsistencia(ic, len(alt))##Vetor das Razões de Consistência
     for i in range(len(ic)):
         print(crt[i],"= ",rc[i])
 
     analise(rc, crt)
     
 ####################################################################
-def analise(rc, crt):
+def analise(rc, crt):##função para análise segundo o metédo proposto por Saaty.
     fora=[]
     for i in range(len(rc)):
         if rc[i]>=0.1:
@@ -149,7 +150,7 @@ def analise(rc, crt):
 def mostrarResultado(pg, alt):
     print("\nO automovel que melhor atende ao as necessidades do decisor é o ", alt[pg.index(max(pg))],".")
     
-def razaoConsistencia(ic, ordemDaMatriz):
+def razaoConsistencia(ic, ordemDaMatriz):##Função para calcular a razão de consistência.
     icr=[## ÍNDICES DE CONSISTÊNCIA RANDÔMICOS
         0.00,##0
         0.00,##1
@@ -168,14 +169,14 @@ def razaoConsistencia(ic, ordemDaMatriz):
         rc.append(ic[i]/icr[ordemDaMatriz])
     return rc
     
-def inconsistencia(dp, pml):
+def inconsistencia(dp, pml):##Função para calcular os índices de Consistência
     n=len(dp[0])
     ic=[]
     for i in range(len(dp)):
         ic.append(modulo(autovalores(dp[i][:], pml[i])-n)/(n-1))
     return ic
 
-def autovalores(dp, pml):
+def autovalores(dp, pml):##Função que retorna o maior autovalor de um critério.
     dpaux=[]
     for i in range(len(dp)):
         col=[]
@@ -243,12 +244,6 @@ def normalizar(dp):
     for i in range(len(dp)):
         norm.append(divCelulas(dp[i], scrt[i]))
     return norm
-##    print ("\nDesempenho das alternativas à luz dos critérios normalizados")
-##    for i in range(len(norm)):
-##        for j in range(len(norm[i])):
-##            print("\n",crt[i]," ",alt)
-##            for k in range(len(norm[i][j])):
-##                print (alt[k]," ",norm[i][j][k])
                 
 def divCelulas(dp, src):
     norm=[]
@@ -271,7 +266,6 @@ def listZero(size):
 def somacoluna(dp):    
     tmp=dp[:]
     soma=listZero(len(tmp[0]))
-    ##print(soma)
     for i in range(len(tmp)):
         for j in range(len(tmp[i])):
             soma[j]+=tmp[i][j]
